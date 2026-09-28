@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.tmp/
+*.log
+_ref/
+_*.js
+_*.ps1
+_*.txt
+_*.png
+_*.zip
+.DS_Store
+Thumbs.db

@@ -1,0 +1,697 @@
+[
+ {
+  "name": "屏幕",
+  "uri": "ms-settings:display",
+  "category": "系统"
+ },
+ {
+  "name": "高级显示设置",
+  "uri": "ms-settings:display-advanced",
+  "category": "系统"
+ },
+ {
+  "name": "显示卡",
+  "uri": "ms-settings:display-advancedgraphics",
+  "category": "系统"
+ },
+ {
+  "name": "夜间模式",
+  "uri": "ms-settings:nightlight",
+  "category": "系统"
+ },
+ {
+  "name": "声音",
+  "uri": "ms-settings:sound",
+  "category": "系统"
+ },
+ {
+  "name": "所有声音设备",
+  "uri": "ms-settings:sound-devices",
+  "category": "系统"
+ },
+ {
+  "name": "麦克风属性",
+  "uri": "ms-settings:sound-defaultinputproperties",
+  "category": "系统"
+ },
+ {
+  "name": "扬声器属性",
+  "uri": "ms-settings:sound-defaultoutputproperties",
+  "category": "系统"
+ },
+ {
+  "name": "音量合成器",
+  "uri": "ms-settings:apps-volume",
+  "category": "系统"
+ },
+ {
+  "name": "通知",
+  "uri": "ms-settings:notifications",
+  "category": "系统"
+ },
+ {
+  "name": "专注",
+  "uri": "ms-settings:quiethours",
+  "category": "系统"
+ },
+ {
+  "name": "电源和电池",
+  "uri": "ms-settings:powersleep",
+  "category": "系统"
+ },
+ {
+  "name": "电源",
+  "uri": "ms-settings:batterysaver",
+  "category": "系统"
+ },
+ {
+  "name": "节能建议",
+  "uri": "ms-settings:energyrecommendations",
+  "category": "系统"
+ },
+ {
+  "name": "存储",
+  "uri": "ms-settings:storagesense",
+  "category": "系统"
+ },
+ {
+  "name": "存储感知",
+  "uri": "ms-settings:storagepolicies",
+  "category": "系统"
+ },
+ {
+  "name": "清理建议",
+  "uri": "ms-settings:storagerecommendations",
+  "category": "系统"
+ },
+ {
+  "name": "磁盘和卷",
+  "uri": "ms-settings:disksandvolumes",
+  "category": "系统"
+ },
+ {
+  "name": "保存新内容的地方",
+  "uri": "ms-settings:savelocations",
+  "category": "系统"
+ },
+ {
+  "name": "多任务处理",
+  "uri": "ms-settings:multitasking",
+  "category": "系统"
+ },
+ {
+  "name": "投影到此电脑",
+  "uri": "ms-settings:project",
+  "category": "系统"
+ },
+ {
+  "name": "就近共享",
+  "uri": "ms-settings:crossdevice",
+  "category": "系统"
+ },
+ {
+  "name": "任务栏",
+  "uri": "ms-settings:taskbar",
+  "category": "个性化"
+ },
+ {
+  "name": "剪贴板",
+  "uri": "ms-settings:clipboard",
+  "category": "系统"
+ },
+ {
+  "name": "远程桌面",
+  "uri": "ms-settings:remotedesktop",
+  "category": "系统"
+ },
+ {
+  "name": "设备加密",
+  "uri": "ms-settings:deviceencryption",
+  "category": "系统"
+ },
+ {
+  "name": "关于",
+  "uri": "ms-settings:about",
+  "category": "系统"
+ },
+ {
+  "name": "蓝牙",
+  "uri": "ms-settings:bluetooth",
+  "category": "设备"
+ },
+ {
+  "name": "设备",
+  "uri": "ms-settings:connecteddevices",
+  "category": "设备"
+ },
+ {
+  "name": "投放",
+  "uri": "ms-settings-connectabledevices:devicediscovery",
+  "category": "设备"
+ },
+ {
+  "name": "打印机和扫描仪",
+  "uri": "ms-settings:printers",
+  "category": "设备"
+ },
+ {
+  "name": "鼠标",
+  "uri": "ms-settings:mousetouchpad",
+  "category": "设备"
+ },
+ {
+  "name": "USB",
+  "uri": "ms-settings:usb",
+  "category": "设备"
+ },
+ {
+  "name": "摄像头",
+  "uri": "ms-settings:camera",
+  "category": "设备"
+ },
+ {
+  "name": "网络和 Internet",
+  "uri": "ms-settings:network-status",
+  "category": "网络"
+ },
+ {
+  "name": "WLAN",
+  "uri": "ms-settings:network-wifi",
+  "category": "网络"
+ },
+ {
+  "name": "管理已知网络",
+  "uri": "ms-settings:network-wifisettings",
+  "category": "网络"
+ },
+ {
+  "name": "以太网",
+  "uri": "ms-settings:network-ethernet",
+  "category": "网络"
+ },
+ {
+  "name": "VPN",
+  "uri": "ms-settings:network-vpn",
+  "category": "网络"
+ },
+ {
+  "name": "代理",
+  "uri": "ms-settings:network-proxy",
+  "category": "网络"
+ },
+ {
+  "name": "飞行模式",
+  "uri": "ms-settings:network-airplanemode",
+  "category": "网络"
+ },
+ {
+  "name": "移动热点",
+  "uri": "ms-settings:network-mobilehotspot",
+  "category": "网络"
+ },
+ {
+  "name": "数据使用量",
+  "uri": "ms-settings:datausage",
+  "category": "网络"
+ },
+ {
+  "name": "个性化",
+  "uri": "ms-settings:personalization",
+  "category": "个性化"
+ },
+ {
+  "name": "背景",
+  "uri": "ms-settings:personalization-background",
+  "category": "个性化"
+ },
+ {
+  "name": "颜色",
+  "uri": "ms-settings:personalization-colors",
+  "category": "个性化"
+ },
+ {
+  "name": "锁屏界面",
+  "uri": "ms-settings:lockscreen",
+  "category": "个性化"
+ },
+ {
+  "name": "主题",
+  "uri": "ms-settings:themes",
+  "category": "个性化"
+ },
+ {
+  "name": "字体",
+  "uri": "ms-settings:fonts",
+  "category": "个性化"
+ },
+ {
+  "name": "开始",
+  "uri": "ms-settings:personalization-start",
+  "category": "个性化"
+ },
+ {
+  "name": "已安装的应用",
+  "uri": "ms-settings:appsfeatures",
+  "category": "应用"
+ },
+ {
+  "name": "默认应用",
+  "uri": "ms-settings:defaultapps",
+  "category": "应用"
+ },
+ {
+  "name": "启动",
+  "uri": "ms-settings:startupapps",
+  "category": "应用"
+ },
+ {
+  "name": "可选功能",
+  "uri": "ms-settings:optionalfeatures",
+  "category": "应用"
+ },
+ {
+  "name": "你的信息",
+  "uri": "ms-settings:yourinfo",
+  "category": "账户"
+ },
+ {
+  "name": "电子邮件和账户",
+  "uri": "ms-settings:emailandaccounts",
+  "category": "账户"
+ },
+ {
+  "name": "登录选项",
+  "uri": "ms-settings:signinoptions",
+  "category": "账户"
+ },
+ {
+  "name": "其他用户",
+  "uri": "ms-settings:otherusers",
+  "category": "账户"
+ },
+ {
+  "name": "Windows 备份",
+  "uri": "ms-settings:sync",
+  "category": "账户"
+ },
+ {
+  "name": "日期和时间",
+  "uri": "ms-settings:dateandtime",
+  "category": "时间"
+ },
+ {
+  "name": "语言和区域",
+  "uri": "ms-settings:regionlanguage",
+  "category": "语言"
+ },
+ {
+  "name": "区域格式",
+  "uri": "ms-settings:regionformatting",
+  "category": "语言"
+ },
+ {
+  "name": "键盘",
+  "uri": "ms-settings:keyboard",
+  "category": "语言"
+ },
+ {
+  "name": "高级键盘设置",
+  "uri": "ms-settings:keyboard-advanced",
+  "category": "语言"
+ },
+ {
+  "name": "输入",
+  "uri": "ms-settings:typing",
+  "category": "语言"
+ },
+ {
+  "name": "语音",
+  "uri": "ms-settings:speech",
+  "category": "语言"
+ },
+ {
+  "name": "隐私和安全性",
+  "uri": "ms-settings:privacy",
+  "category": "隐私"
+ },
+ {
+  "name": "常规",
+  "uri": "ms-settings:privacy-general",
+  "category": "隐私"
+ },
+ {
+  "name": "位置",
+  "uri": "ms-settings:privacy-location",
+  "category": "隐私"
+ },
+ {
+  "name": "相机",
+  "uri": "ms-settings:privacy-webcam",
+  "category": "隐私"
+ },
+ {
+  "name": "麦克风",
+  "uri": "ms-settings:privacy-microphone",
+  "category": "隐私"
+ },
+ {
+  "name": "Windows 更新",
+  "uri": "ms-settings:windowsupdate",
+  "category": "更新"
+ },
+ {
+  "name": "检查更新",
+  "uri": "ms-settings:windowsupdate-action",
+  "category": "更新"
+ },
+ {
+  "name": "更新历史记录",
+  "uri": "ms-settings:windowsupdate-history",
+  "category": "更新"
+ },
+ {
+  "name": "可选更新",
+  "uri": "ms-settings:windowsupdate-optionalupdates",
+  "category": "更新"
+ },
+ {
+  "name": "高级选项",
+  "uri": "ms-settings:windowsupdate-options",
+  "category": "更新"
+ },
+ {
+  "name": "重启选项",
+  "uri": "ms-settings:windowsupdate-restartoptions",
+  "category": "更新"
+ },
+ {
+  "name": "获取最新更新",
+  "uri": "ms-settings:windowsupdate-seekerondemand",
+  "category": "更新"
+ },
+ {
+  "name": "传递优化",
+  "uri": "ms-settings:delivery-optimization",
+  "category": "更新"
+ },
+ {
+  "name": "Windows 安全中心",
+  "uri": "ms-settings:windowsdefender",
+  "category": "安全"
+ },
+ {
+  "name": "疑难解答",
+  "uri": "ms-settings:troubleshoot",
+  "category": "系统"
+ },
+ {
+  "name": "恢复",
+  "uri": "ms-settings:recovery",
+  "category": "系统"
+ },
+ {
+  "name": "激活",
+  "uri": "ms-settings:activation",
+  "category": "系统"
+ },
+ {
+  "name": "查找我的设备",
+  "uri": "ms-settings:findmydevice",
+  "category": "安全"
+ },
+ {
+  "name": "开发者选项",
+  "uri": "ms-settings:developers",
+  "category": "系统"
+ },
+ {
+  "name": "搜索 Windows",
+  "uri": "ms-settings:search",
+  "category": "搜索"
+ },
+ {
+  "name": "搜索权限",
+  "uri": "ms-settings:search-permissions",
+  "category": "搜索"
+ },
+ {
+  "name": "编辑用户环境变量",
+  "uri": "rundll32 sysdm.cpl,EditEnvironmentVariables",
+  "category": "系统"
+ },
+ {
+  "name": "编辑系统环境变量",
+  "uri": "SystemPropertiesAdvanced.exe",
+  "category": "系统"
+ },
+ {
+  "name": "计算机名",
+  "uri": "SystemPropertiesComputerName.exe",
+  "category": "系统"
+ },
+ {
+  "name": "系统保护",
+  "uri": "SystemPropertiesProtection.exe",
+  "category": "系统"
+ },
+ {
+  "name": "远程设置",
+  "uri": "SystemPropertiesRemote.exe",
+  "category": "系统"
+ },
+ {
+  "name": "程序和功能",
+  "uri": "appwiz.cpl",
+  "category": "应用"
+ },
+ {
+  "name": "鼠标属性",
+  "uri": "main.cpl",
+  "category": "设备"
+ },
+ {
+  "name": "网络连接",
+  "uri": "ncpa.cpl",
+  "category": "网络"
+ },
+ {
+  "name": "电源选项",
+  "uri": "powercfg.cpl",
+  "category": "系统"
+ },
+ {
+  "name": "防火墙",
+  "uri": "firewall.cpl",
+  "category": "安全"
+ },
+ {
+  "name": "用户账户",
+  "uri": "netplwiz.exe",
+  "category": "账户"
+ },
+ {
+  "name": "日期和时间",
+  "uri": "timedate.cpl",
+  "category": "时间"
+ },
+ {
+  "name": "设备管理器",
+  "uri": "devmgmt.msc",
+  "category": "管理"
+ },
+ {
+  "name": "磁盘管理",
+  "uri": "diskmgmt.msc",
+  "category": "管理"
+ },
+ {
+  "name": "计算机管理",
+  "uri": "compmgmt.msc",
+  "category": "管理"
+ },
+ {
+  "name": "服务",
+  "uri": "services.msc",
+  "category": "管理"
+ },
+ {
+  "name": "任务管理器",
+  "uri": "taskmgr.exe",
+  "category": "系统"
+ },
+ {
+  "name": "注册表编辑器",
+  "uri": "regedit.exe",
+  "category": "系统"
+ },
+ {
+  "name": "事件查看器",
+  "uri": "eventvwr.msc",
+  "category": "管理"
+ },
+ {
+  "name": "任务计划程序",
+  "uri": "taskschd.msc",
+  "category": "管理"
+ },
+ {
+  "name": "性能监视器",
+  "uri": "perfmon.msc",
+  "category": "管理"
+ },
+ {
+  "name": "资源监视器",
+  "uri": "resmon.exe",
+  "category": "系统"
+ },
+ {
+  "name": "组策略编辑器",
+  "uri": "gpedit.msc",
+  "category": "管理"
+ },
+ {
+  "name": "本地安全策略",
+  "uri": "secpol.msc",
+  "category": "安全"
+ },
+ {
+  "name": "回收站",
+  "uri": "shell:RecycleBinFolder",
+  "category": "系统"
+ },
+ {
+  "name": "命令提示符",
+  "uri": "cmd.exe",
+  "category": "系统"
+ },
+ {
+  "name": "PowerShell",
+  "uri": "powershell.exe",
+  "category": "系统"
+ },
+ {
+  "name": "Windows Terminal",
+  "uri": "wt.exe",
+  "category": "系统"
+ },
+ {
+  "name": "记事本",
+  "uri": "notepad.exe",
+  "category": "应用"
+ },
+ {
+  "name": "计算器",
+  "uri": "calc.exe",
+  "category": "应用"
+ },
+ {
+  "name": "画图",
+  "uri": "mspaint.exe",
+  "category": "应用"
+ },
+ {
+  "name": "截图工具",
+  "uri": "snippingtool.exe",
+  "category": "应用"
+ },
+ {
+  "name": "放大镜工具",
+  "uri": "magnify.exe",
+  "category": "辅助"
+ },
+ {
+  "name": "字符映射表",
+  "uri": "charmap.exe",
+  "category": "应用"
+ },
+ {
+  "name": "远程桌面连接",
+  "uri": "mstsc.exe",
+  "category": "系统"
+ },
+ {
+  "name": "系统配置",
+  "uri": "msconfig.exe",
+  "category": "系统"
+ },
+ {
+  "name": "磁盘清理",
+  "uri": "cleanmgr.exe",
+  "category": "系统"
+ },
+ {
+  "name": "磁盘碎片整理",
+  "uri": "dfrgui.exe",
+  "category": "系统"
+ },
+ {
+  "name": "系统信息工具",
+  "uri": "msinfo32.exe",
+  "category": "系统"
+ },
+ {
+  "name": "步骤记录器",
+  "uri": "psr.exe",
+  "category": "系统"
+ },
+ {
+  "name": "键盘属性",
+  "uri": "control.exe keyboard",
+  "category": "设备"
+ },
+ {
+  "name": "声音属性",
+  "uri": "mmsys.cpl",
+  "category": "系统"
+ },
+ {
+  "name": "添加打印机",
+  "uri": "printui.exe",
+  "category": "设备"
+ },
+ {
+  "name": "系统还原",
+  "uri": "rstrui.exe",
+  "category": "系统"
+ },
+ {
+  "name": "DirectX 诊断工具",
+  "uri": "dxdiag.exe",
+  "category": "系统"
+ },
+ {
+  "name": "程序兼容性助手",
+  "uri": "msdt.exe -id PCWDiagnostic",
+  "category": "系统"
+ },
+ {
+  "name": "内存诊断工具",
+  "uri": "MdSched.exe",
+  "category": "系统"
+ },
+ {
+  "name": "Windows 功能",
+  "uri": "optionalfeatures.exe",
+  "category": "系统"
+ },
+ {
+  "name": "打开运行",
+  "uri": "rundll32 shell32.dll,#61",
+  "category": "系统"
+ },
+ {
+  "name": "关于 Windows",
+  "uri": "winver.exe",
+  "category": "系统"
+ },
+ {
+  "name": "音频设置",
+  "uri": "ms-settings:sound",
+  "category": "系统"
+ },
+ {
+  "name": "声音播放设置",
+  "uri": "mmsys.cpl",
+  "category": "系统"
+ }
+]

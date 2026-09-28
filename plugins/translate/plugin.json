@@ -1,0 +1,9 @@
+{
+  "name": "快速翻译",
+  "version": "1.0.0",
+  "description": "输入文本即时翻译，自动中英互译，多引擎回退",
+  "logo": "logo.png",
+  "entry": "index.html",
+  "keywords": ["翻译", "fy", "fanyi", "translate", "trans"],
+  "subInputPlaceholder": "输入要翻译的文本…"
+}

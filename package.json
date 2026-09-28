@@ -1,0 +1,46 @@
+{
+  "name": "jtools",
+  "productName": "jTools",
+  "version": "1.0.0",
+  "description": "jTools — uTools 风格的极简启动器：无广告，搜索应用/文件/插件，内置快速翻译插件",
+  "main": "src/main/main.js",
+  "author": "jTools",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "start:debug": "electron . --show-on-start",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.jtools.launcher",
+    "productName": "jTools",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "plugins/**/*",
+      "assets/**/*",
+      "resources/**/*",
+      "package.json"
+    ],
+    "asarUnpack": ["resources/**/*"],
+    "win": {
+      "icon": "assets/icon.png",
+      "target": ["nsis"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    }
+  },
+  "dependencies": {
+    "pinyin-pro": "^3.24.2"
+  },
+  "devDependencies": {
+    "electron": "41.0.3",
+    "electron-builder": "^25.1.8"
+  }
+}
