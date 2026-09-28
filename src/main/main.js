@@ -1,4 +1,5 @@
 const { app, ipcMain, clipboard, shell, session, dialog } = require('electron')
+const { execFile } = require('child_process')
 const path = require('path')
 const fs = require('fs')
 
