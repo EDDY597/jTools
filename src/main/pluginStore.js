@@ -6,6 +6,8 @@ const { app } = require('electron')
 const fs = require('fs')
 const path = require('path')
 const { execFile } = require('child_process')
+const https = require('https')
+const http = require('http')
 
 const BUILTIN_DIR = path.join(__dirname, '../../plugins')
 const USER_DIR = () => path.join(app.getPath('userData'), 'plugins')
@@ -78,11 +80,61 @@ function uninstall(id) {
   return listPlugins()
 }
 
+// GitHub 直连（raw.githubusercontent.com）在部分网络不可达，自动回退 jsDelivr 镜像
+function candidatesFor(url) {
+  const list = [String(url)]
+  const m = String(url).match(/^https?:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/(.+)$/)
+  if (m) list.push(`https://cdn.jsdelivr.net/gh/${m[1]}/${m[2]}@${m[3]}`)
+  return list
+}
+
+// Electron 主进程的 fetch 走 Chromium 网络栈，AbortSignal 对挂起连接不可靠；
+// 这里用 Node 原生 https 直连（带超时与重定向跟随），行为与 curl 一致
+function httpGetBuffer(url, timeoutMs, redirects = 3) {
+  return new Promise((resolve, reject) => {
+    const mod = url.startsWith('https:') ? https : http
+    const req = mod.get(url, { timeout: timeoutMs }, (res) => {
+      if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location && redirects > 0) {
+        res.resume()
+        const next = new URL(res.headers.location, url).toString()
+        return resolve(httpGetBuffer(next, timeoutMs, redirects - 1))
+      }
+      if (res.statusCode !== 200) {
+        res.resume()
+        return reject(new Error(`HTTP ${res.statusCode} (${url})`))
+      }
+      const chunks = []
+      res.on('data', (c) => chunks.push(c))
+      res.on('end', () => resolve(Buffer.concat(chunks)))
+      res.on('error', () => reject(new Error('响应读取失败')))
+    })
+    req.on('timeout', () => req.destroy(new Error('连接超时')))
+    req.on('error', (e) => reject(e))
+  })
+}
+
+// GitHub 直连（raw.githubusercontent.com）在部分网络不可达，自动回退 jsDelivr 镜像
+function candidatesFor(url) {
+  const list = [String(url)]
+  const m = String(url).match(/^https?:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/(.+)$/)
+  if (m) list.push(`https://cdn.jsdelivr.net/gh/${m[1]}/${m[2]}@${m[3]}`)
+  return list
+}
+
+async function fetchFirstOk(urls, timeoutMs) {
+  let lastErr = new Error('无可用的源')
+  for (const u of urls) {
+    try {
+      const buf = await httpGetBuffer(u, timeoutMs)
+      return { buf, url: u }
+    } catch (e) { lastErr = e }
+  }
+  throw lastErr
+}
+
 // 下载市场 zip 到临时文件
-async function downloadZip(url, dest) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(30000) })
-  if (!res.ok) throw new Error(`下载失败 HTTP ${res.status}`)
-  const buf = Buffer.from(await res.arrayBuffer())
+async function downloadZip(zipUrl, dest) {
+  const { buf } = await fetchFirstOk(candidatesFor(zipUrl), 10000)
   if (buf.length < 100) throw new Error('下载内容异常')
   fs.writeFileSync(dest, buf)
 }
@@ -151,11 +203,11 @@ function importFromDir(dirPath) {
 }
 
 async function fetchMarket(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000) })
-  if (!res.ok) throw new Error(`市场目录拉取失败 HTTP ${res.status}`)
-  const data = JSON.parse(await res.text())
+  const base = String(url || MARKET_URL)
+  const { buf, url: used } = await fetchFirstOk(candidatesFor(base), 10000)
+  const data = JSON.parse(buf.toString('utf8'))
   if (!Array.isArray(data.plugins)) throw new Error('市场目录格式无效（缺少 plugins 数组）')
-  return data
+  return { data, marketUrl: used }
 }
 
 // 相对下载地址基于 marketplace.json 的 URL 解析
