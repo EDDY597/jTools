@@ -734,7 +734,8 @@ function syncHeight() {
   if (state.mode === 'plugin') {
     h = 58 + (state.pluginHeight || 420)
   } else if (state.mode === 'settings') {
-    h = Math.min(58 + contentHeight(settingsView, 34), 58 + 541)
+    // 设置页固定大高度（模仿 ZTools 设置插件：全高布局、内容区内部滚动），不随标签页内容跳变
+    h = 58 + 620
   } else {
     const content = contentHeight(resultsEl, 14)
     if (content > 20) h = 58 + Math.min(content, 541)
@@ -909,13 +910,18 @@ async function renderSettings() {
   const ver = await window.jtools.getAppVersion()
   const dirsText = (s.fileSearchDirs || []).join('\n')
   settingsView.innerHTML = `
-    <div class="settings-nav">
-      <span class="tab active" data-tab="general">通用</span>
-      <span class="tab" data-tab="pins">固定管理</span>
-      <span class="tab" data-tab="files">文件搜索</span>
-      <span class="tab" data-tab="translate">翻译</span>
-      <span class="tab" data-tab="about">关于</span>
-    </div>
+    <div class="settings-body">
+    <aside class="settings-side">
+      <div class="side-title">设置</div>
+      <div class="tab active" data-tab="general">通用</div>
+      <div class="tab" data-tab="pins">固定管理</div>
+      <div class="tab" data-tab="market">插件市场</div>
+      <div class="tab" data-tab="installed">已安装插件</div>
+      <div class="tab" data-tab="files">文件搜索</div>
+      <div class="tab" data-tab="translate">翻译</div>
+      <div class="tab" data-tab="about">关于</div>
+    </aside>
+    <div class="settings-main">
 
     <div class="settings-pane active" data-pane="general">
       <div class="set-row">
@@ -940,6 +946,25 @@ async function renderSettings() {
       <div class="set-row"><span class="set-desc">打开系统对话框浏览文件夹选取，快捷方式(.lnk)可直接选择并使用其图标；添加后显示在首页「已固定」</span>
         <span class="status-text" id="pin-status"></span></div>
       <div id="pin-list"></div>
+    </div>
+
+    <div class="settings-pane" data-pane="market">
+      <div class="set-row"><span class="set-label">插件市场</span>
+        <button class="btn secondary" id="btn-market-refresh">刷新</button>
+        <span class="status-text" id="market-status"></span>
+      </div>
+      <div class="set-row"><span class="set-desc">目录托管在 jTools 仓库（marketplace.json）；安装后可在「已安装插件」中管理</span></div>
+      <div id="market-list"></div>
+    </div>
+
+    <div class="settings-pane" data-pane="installed">
+      <div class="set-row"><span class="set-label">已安装插件</span>
+        <button class="btn secondary" id="btn-import-plugin">从文件夹导入…</button>
+        <button class="btn secondary" id="btn-open-plugins-dir">打开插件目录</button>
+        <span class="status-text" id="installed-status"></span>
+      </div>
+      <div class="set-row"><span class="set-desc">内置插件不可卸载；用户安装的插件存放在数据目录 plugins/ 下，卸载后立即生效</span></div>
+      <div id="installed-list"></div>
     </div>
 
     <div class="settings-pane" data-pane="files">
@@ -985,6 +1010,9 @@ async function renderSettings() {
       <div class="set-row"><span class="set-label">版本</span><span class="set-desc">jTools v${escapeHtml(ver)} · 无广告 · 无追踪</span></div>
       <div class="set-row"><span class="set-label">快捷键</span><span class="set-desc">Alt+Space 呼出 / Esc 隐藏 / 输入 fy 快速翻译</span></div>
       <div class="set-row"><button class="btn secondary" id="btn-open-data">打开数据目录</button></div>
+    </div>
+
+    </div>
     </div>`
 
   // tab 切换
@@ -993,9 +1021,129 @@ async function renderSettings() {
       settingsView.querySelectorAll('.tab').forEach((x) => x.classList.toggle('active', x === t))
       settingsView.querySelectorAll('.settings-pane').forEach((p) =>
         p.classList.toggle('active', p.dataset.pane === t.dataset.tab))
+      if (t.dataset.tab === 'market') loadMarket()
+      if (t.dataset.tab === 'installed') renderInstalled()
       syncHeight()
     }
   })
+
+  // ---- 插件市场 ----
+  let marketData = null
+  let marketUrl = ''
+  const marketList = $('market-list')
+  const marketStatus = $('market-status')
+  const renderMarket = () => {
+    if (!marketData) {
+      marketList.innerHTML = `<div class="set-desc" style="padding:6px 0">尚未加载，切到本页或点“刷新”拉取市场目录</div>`
+      return
+    }
+    marketList.innerHTML = marketData.plugins.length
+      ? marketData.plugins.map((mp) => {
+          const inst = state.plugins.find((p) => p.id === mp.id)
+          const upToDate = inst && inst.version === (mp.version || '1.0.0')
+          const action = upToDate
+            ? `<span class="set-desc">已安装 v${escapeHtml(inst.version)}</span>`
+            : `<button class="btn" data-mid="${escapeHtml(mp.id)}">${inst ? '更新' : '安装'}</button>`
+          const logoHtml = mp.logo
+            ? `<img src="${escapeHtml(mp.logo)}" style="width:26px;height:26px;border-radius:5px" alt="">`
+            : `<span style="color:#fff;font-size:12px;font-weight:700;background:${letterColor(mp.name || '?')};width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center">${escapeHtml((mp.name || '?')[0])}</span>`
+          return `<div class="pin-row">
+            <div class="item-icon" style="width:26px;height:26px">${logoHtml}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(mp.name)} <span style="color:var(--text-secondary)">v${escapeHtml(mp.version || '1.0.0')}${mp.author ? ' · ' + escapeHtml(mp.author) : ''}</span></div>
+              <div style="font-size:11px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(mp.description || '')}</div>
+            </div>
+            ${action}
+          </div>`
+        }).join('')
+      : `<div class="set-desc" style="padding:6px 0">市场目录为空</div>`
+    marketList.querySelectorAll('button[data-mid]').forEach((b) => {
+      b.onclick = async () => {
+        const id = b.dataset.mid
+        const mp = marketData.plugins.find((x) => x.id === id)
+        if (!mp) return
+        const inst = state.plugins.find((p) => p.id === id)
+        b.disabled = true
+        b.textContent = '安装中…'
+        const r = await window.jtools.installMarketPlugin(mp.download, marketUrl, mp.id)
+        if (r.ok) {
+          state.plugins = r.list
+          renderInstalled()
+          renderMarket()
+          marketStatus.textContent = `${mp.name} 安装成功 ✓`
+        } else {
+          b.disabled = false
+          b.textContent = inst ? '更新' : '安装'
+          marketStatus.textContent = '安装失败: ' + r.error
+        }
+      }
+    })
+  }
+  const loadMarket = async (force) => {
+    if (marketData && !force) { renderMarket(); return }
+    marketStatus.textContent = '加载中…'
+    const r = await window.jtools.fetchMarket()
+    if (r.ok) {
+      marketData = r.data
+      marketUrl = r.marketUrl
+      marketStatus.textContent = `共 ${marketData.plugins.length} 个插件`
+      renderMarket()
+    } else {
+      marketStatus.textContent = '加载失败: ' + r.error
+      marketList.innerHTML = `<div class="set-desc" style="padding:6px 0">市场目录拉取失败，请检查网络后点“刷新”重试</div>`
+    }
+  }
+  $('btn-market-refresh').onclick = () => loadMarket(true)
+
+  // ---- 已安装插件 ----
+  const installedList = $('installed-list')
+  const installedStatus = $('installed-status')
+  const renderInstalled = () => {
+    installedList.innerHTML = state.plugins.length
+      ? state.plugins.map((p) => `
+        <div class="pin-row">
+          <div class="item-icon" style="width:26px;height:26px">
+            ${p.logo
+              ? `<img src="${p.logo}" style="width:26px;height:26px;border-radius:5px" alt="">`
+              : `<span style="color:#fff;font-size:12px;font-weight:700;background:${letterColor(p.name || '?')};width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center">${escapeHtml((p.name || '?')[0])}</span>`}
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(p.name)} <span style="color:var(--text-secondary)">v${escapeHtml(p.version || '1.0.0')}</span>${p.builtin ? ' <span class="item-badge">内置</span>' : ''}</div>
+            <div style="font-size:11px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(p.description || p.dir || '')}</div>
+          </div>
+          ${p.builtin ? '' : `<button class="btn" data-unid="${escapeHtml(p.id)}">卸载</button>`}
+        </div>`).join('')
+      : `<div class="set-desc" style="padding:6px 0">暂无插件</div>`
+    installedList.querySelectorAll('button[data-unid]').forEach((b) => {
+      b.onclick = async () => {
+        const p = state.plugins.find((x) => x.id === b.dataset.unid)
+        if (!p || !confirm(`确定卸载「${p.name}」吗？`)) return
+        const r = await window.jtools.uninstallPlugin(p.id)
+        if (r.ok) {
+          state.plugins = r.list
+          renderInstalled()
+          renderMarket()
+          installedStatus.textContent = '已卸载 ✓'
+        } else {
+          installedStatus.textContent = '卸载失败: ' + r.error
+        }
+      }
+    })
+  }
+  renderInstalled()
+  $('btn-import-plugin').onclick = async () => {
+    const r = await window.jtools.importPluginDir()
+    if (r.canceled) return
+    if (r.ok) {
+      state.plugins = r.list
+      renderInstalled()
+      renderMarket()
+      installedStatus.textContent = `已导入 ${r.id} ✓`
+    } else {
+      installedStatus.textContent = '导入失败: ' + r.error
+    }
+  }
+  $('btn-open-plugins-dir').onclick = () => window.jtools.openPluginsDir()
   $('set-hotkey').onchange = (e) => window.jtools.saveSettings({ hotkey: e.target.value })
   $('set-autostart').onchange = (e) => window.jtools.saveSettings({ autoStart: e.target.checked })
 

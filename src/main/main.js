@@ -8,40 +8,14 @@ const windowManager = require('./windowManager')
 const scanApps = require('./scanApps')
 const fileIndex = require('./fileIndex')
 const translateSvc = require('./translate')
+const pluginStore = require('./pluginStore')
 const { registerIconScheme, registerIconProtocolForSession } = require('./iconProtocol')
 
 // 必须在 app.ready 之前注册为特权协议
 registerIconScheme()
 
-let pluginsCache = null
 function getPlugins() {
-  if (pluginsCache) return pluginsCache
-  const dir = path.join(__dirname, '../../plugins')
-  const list = []
-  try {
-    for (const name of fs.readdirSync(dir)) {
-      const mf = path.join(dir, name, 'plugin.json')
-      if (!fs.existsSync(mf)) continue
-      const cfg = JSON.parse(fs.readFileSync(mf, 'utf8'))
-      let logo = ''
-      const logoFile = path.join(dir, name, cfg.logo || '')
-      if (cfg.logo && fs.existsSync(logoFile)) {
-        logo = 'data:image/png;base64,' + fs.readFileSync(logoFile).toString('base64')
-      }
-      list.push({
-        id: name,
-        name: cfg.name || name,
-        version: cfg.version || '1.0.0',
-        description: cfg.description || '',
-        keywords: cfg.keywords || [],
-        subInputPlaceholder: cfg.subInputPlaceholder || '',
-        entry: path.join(dir, name, cfg.entry || 'index.html'),
-        logo
-      })
-    }
-  } catch { /* plugins dir missing */ }
-  pluginsCache = list
-  return list
+  return pluginStore.listPlugins()
 }
 
 async function launchItem(item) {
@@ -186,6 +160,43 @@ function registerIpc() {
   ipcMain.handle('rebuild-file-index', () => fileIndex.buildIndex().then(() => fileIndex.getIndexStatus()))
   ipcMain.handle('get-index-status', () => fileIndex.getIndexStatus())
   ipcMain.handle('get-plugins', () => getPlugins())
+
+  // 插件市场 / 已安装插件管理
+  ipcMain.handle('plugins:uninstall', (_e, id) => {
+    try { return { ok: true, list: pluginStore.uninstall(String(id)) } }
+    catch (e) { return { ok: false, error: e.message } }
+  })
+  ipcMain.handle('plugins:import-dir', async () => {
+    try {
+      const res = await dialog.showOpenDialog(windowManager.getWindow() || undefined, {
+        title: '选择要导入的插件文件夹（内含 plugin.json）',
+        properties: ['openDirectory']
+      })
+      if (res.canceled || !res.filePaths[0]) return { ok: false, canceled: true }
+      const r = pluginStore.importFromDir(res.filePaths[0])
+      return { ok: true, id: r.id, list: r.list }
+    } catch (e) { return { ok: false, error: e.message } }
+  })
+  ipcMain.handle('plugins:open-dir', () => {
+    const userDir = path.join(app.getPath('userData'), 'plugins')
+    fs.mkdirSync(userDir, { recursive: true })
+    shell.openPath(userDir)
+    return true
+  })
+  ipcMain.handle('market:fetch', async (_e, url) => {
+    try {
+      const data = await pluginStore.fetchMarket(String(url || pluginStore.MARKET_URL))
+      return { ok: true, data, marketUrl: String(url || pluginStore.MARKET_URL) }
+    } catch (e) { return { ok: false, error: e.message } }
+  })
+  ipcMain.handle('market:install', async (_e, download, marketUrl, marketId) => {
+    try {
+      const zipUrl = pluginStore.resolveDownloadUrl(String(marketUrl || pluginStore.MARKET_URL), String(download || ''))
+      if (!zipUrl) throw new Error('该市场条目没有下载地址')
+      const r = await pluginStore.installFromZip(zipUrl, marketId ? String(marketId) : undefined)
+      return r
+    } catch (e) { return { ok: false, error: e.message } }
+  })
 
   // 固定管理：系统对话框浏览选择（.lnk 快捷方式可多选；文件夹单独选择）
   // 对话框打开期间抑制失焦隐藏，关闭后恢复，主窗保持呼出状态

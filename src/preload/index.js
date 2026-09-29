@@ -10,6 +10,11 @@ contextBridge.exposeInMainWorld('jtools', {
   searchFiles: (q, limit, type) => ipcRenderer.invoke('search-files', q, limit, type),
   getEsStatus: (force) => ipcRenderer.invoke('get-es-status', force),
   getPlugins: () => ipcRenderer.invoke('get-plugins'),
+  uninstallPlugin: (id) => ipcRenderer.invoke('plugins:uninstall', id),
+  importPluginDir: () => ipcRenderer.invoke('plugins:import-dir'),
+  openPluginsDir: () => ipcRenderer.invoke('plugins:open-dir'),
+  fetchMarket: (url) => ipcRenderer.invoke('market:fetch', url),
+  installMarketPlugin: (download, marketUrl, marketId) => ipcRenderer.invoke('market:install', download, marketUrl, marketId),
   pickPinFiles: () => ipcRenderer.invoke('pick-pin-files'),
   pickPinDir: () => ipcRenderer.invoke('pick-pin-dir'),
 

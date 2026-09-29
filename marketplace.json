@@ -1,0 +1,14 @@
+{
+  "name": "jTools 插件市场",
+  "updatedAt": "2026-09-29",
+  "plugins": [
+    {
+      "id": "translate",
+      "name": "快速翻译",
+      "version": "1.0.0",
+      "author": "jTools",
+      "description": "输入 fy 即时翻译：Google / MyMemory / 百度多引擎竞速回退，无需 API Key，支持子输入框实时翻译",
+      "download": "market/translate-1.0.0.zip"
+    }
+  ]
+}
