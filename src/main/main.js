@@ -185,8 +185,9 @@ function registerIpc() {
   })
   ipcMain.handle('market:fetch', async (_e, url) => {
     try {
-      const data = await pluginStore.fetchMarket(String(url || pluginStore.MARKET_URL))
-      return { ok: true, data, marketUrl: String(url || pluginStore.MARKET_URL) }
+      const m = await pluginStore.fetchMarket(String(url || pluginStore.MARKET_URL))
+      // fetchMarket 返回 { data: 市场对象, marketUrl }，此处拆包避免双层嵌套
+      return { ok: true, data: m.data, marketUrl: m.marketUrl }
     } catch (e) { return { ok: false, error: e.message } }
   })
   ipcMain.handle('market:install', async (_e, download, marketUrl, marketId) => {
