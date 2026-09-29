@@ -89,35 +89,42 @@ function candidatesFor(url) {
 }
 
 // Electron 主进程的 fetch 走 Chromium 网络栈，AbortSignal 对挂起连接不可靠；
-// 这里用 Node 原生 https 直连（带超时与重定向跟随），行为与 curl 一致
+// 这里用 Node 原生 https 直连。注意：socket 空闲超时对“连接阶段卡死”（SYN 黑洞）不生效，
+// 必须用硬定时器强制销毁请求，否则市场会永远卡在加载中
 function httpGetBuffer(url, timeoutMs, redirects = 3) {
   return new Promise((resolve, reject) => {
     const mod = url.startsWith('https:') ? https : http
-    const req = mod.get(url, { timeout: timeoutMs }, (res) => {
+    const req = mod.get(url, (res) => {
       if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location && redirects > 0) {
         res.resume()
         const next = new URL(res.headers.location, url).toString()
-        return resolve(httpGetBuffer(next, timeoutMs, redirects - 1))
+        const r = httpGetBuffer(next, timeoutMs, redirects - 1)
+        r.then(
+          (buf) => { clearTimeout(hard); resolve(buf) },
+          (e) => { clearTimeout(hard); reject(e) }
+        )
+        return
       }
       if (res.statusCode !== 200) {
         res.resume()
+        clearTimeout(hard)
         return reject(new Error(`HTTP ${res.statusCode} (${url})`))
       }
       const chunks = []
       res.on('data', (c) => chunks.push(c))
-      res.on('end', () => resolve(Buffer.concat(chunks)))
-      res.on('error', () => reject(new Error('响应读取失败')))
+      res.on('end', () => { clearTimeout(hard); resolve(Buffer.concat(chunks)) })
+      res.on('error', () => { clearTimeout(hard); reject(new Error('响应读取失败')) })
     })
-    req.on('timeout', () => req.destroy(new Error('连接超时')))
-    req.on('error', (e) => reject(e))
+    const hard = setTimeout(() => req.destroy(new Error('请求超时')), timeoutMs)
+    req.on('error', (e) => { clearTimeout(hard); reject(e) })
   })
 }
 
-// GitHub 直连（raw.githubusercontent.com）在部分网络不可达，自动回退 jsDelivr 镜像
+// GitHub 直连（raw.githubusercontent.com）在部分网络不可达，jsDelivr 镜像优先、直连兜底
 function candidatesFor(url) {
   const list = [String(url)]
   const m = String(url).match(/^https?:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/(.+)$/)
-  if (m) list.push(`https://cdn.jsdelivr.net/gh/${m[1]}/${m[2]}@${m[3]}`)
+  if (m) list.unshift(`https://cdn.jsdelivr.net/gh/${m[1]}/${m[2]}@${m[3]}`)
   return list
 }
 
